@@ -1,0 +1,51 @@
+- name: Configure VMs
+  hosts: k3s_cluster[0]
+  gather_facts: false
+  become: true
+  tasks:  
+    - fetch:
+        src: "/home/{{ansible_user}}/.kube/config"
+        dest: ~/.kube/config
+        flat: yes
+
+- name: Configure VMs
+  hosts: localhost
+  gather_facts: false
+  become: false
+  tasks:  
+    - name: "Get {{ groups['k3s_cluster'][0] }} VM IP"
+      shell: "tart ip {{ groups['k3s_cluster'][0] }}"
+      register: ip
+      retries: 5
+      delay: 3
+      until: ip.stdout 
+      ignore_errors: true
+    - name: Read ~/.kube/config yaml
+      ansible.builtin.slurp:
+        src: ~/.kube/config
+      register: config_yaml
+    - name: Parse config_yaml yaml to dictionary
+      set_fact:
+        parsed_config_yaml: "{{ config_yaml['content'] | b64decode | from_yaml }}"
+
+    - name: Patch .kube/config yaml dictionary
+      set_fact:
+        parsed_config_yaml: "{{ parsed_config_yaml | combine(newdata, recursive=true) }}"
+      vars: 
+        newdata:
+          clusters: 
+          - cluster: 
+              certificate-authority-data: "{{parsed_config_yaml.clusters[0]['cluster']['certificate-authority-data']}}"
+              server: "https://{{ip.stdout}}:6443"
+            name: "{{parsed_config_yaml.clusters[0].name}}"
+          # users:
+          #   - name: admin
+          #     user:
+          #       client-certificate-data: "{{ mydata.users[0].user['client-certificate-data'] }}"
+          #       client-key-data: "{{ mydata.users[0].user['client-key-data'] }}"
+          #       token: "{{token}}"
+
+    - name: Write ~/.kube/config yaml
+      ansible.builtin.copy:
+        content: '{{ parsed_config_yaml | to_nice_yaml }}'
+        dest: ~/.kube/config

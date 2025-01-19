@@ -1,0 +1,18 @@
+- name: Start VMs
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:  
+    - name: List VMs
+      command: "tart list --format json"
+      register: vm_list
+
+    - name: Find stopped VMs
+      set_fact:
+        stopped_vm_names: "{{vm_list.stdout | from_json | selectattr('Source', '==', 'local') | selectattr('State', '==', 'stopped') }}"
+
+    - name: Start stopped VM
+      include_tasks: tasks/tart/start.yml
+      loop: "{{ stopped_vm_names }}"
+      no_log: true

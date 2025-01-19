@@ -1,0 +1,51 @@
+- name: "Get {{vm.Name}} VM IP"
+  shell: "tart ip {{vm.Name}}"
+  register: ip
+  retries: 5
+  delay: 3
+  until: ip.stdout 
+  ignore_errors: true
+
+- name: "Remove VM {{vm.Name}} IP from known_hosts"
+  become: false
+  lineinfile:
+    dest: "{{ lookup('env','HOME') }}/.ssh/known_hosts"
+    regexp: "^{{ip.stdout}}.*$"
+    state: absent
+
+- name: Add tart VM {{vm.Name}} to the ansible inventory
+  ansible.builtin.add_host:
+    groups: tart_vms
+    name: "{{vm.Name}}"
+    hostname: "{{ip.stdout}}"
+    ansible_host: "{{ip.stdout}}"
+    ansible_port: 22
+    ansible_user: admin
+    ansible_password: admin
+
+- name: "Set domain names fact"
+  set_fact:
+    domains: "{{ SERVICE_DOMAINS | join(' ') }}"
+
+- name: "Add {{vm.Name}} VM IP address to hosts file"
+  become: true
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ ip.stdout }} {{ vm.Name }}$'
+    line: "{{ ip.stdout }} {{ vm.Name }}"
+    state: present
+
+- name: "Add {{ domains }} IP address to hosts file"
+  become: true
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ ip.stdout }} {{ domains }}$'
+    line: "{{ ip.stdout }} {{ domains }}"
+    state: present
+
+- set_fact:
+    vms_hosts: []
+- name: "Set VMs host fact"
+  set_fact:
+    vms_hosts: "{{ vms_hosts | union([ '{{ ip.stdout }} {{ domains }}' ]) }}"
+

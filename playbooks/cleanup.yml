@@ -1,0 +1,36 @@
+- name: Cleanup VMs
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:  
+    - name: "List VMs"
+      command: "tart list --format json"
+      register: vm_list
+
+    - name: "Find running VMs"
+      set_fact:
+        running_vm_names: "{{vm_list.stdout | from_json | selectattr('Source', '==', 'local') | selectattr('State', '==', 'running')  | map(attribute='Name') }}"
+
+    - name: "Stop running VM"
+      command: "tart stop {{item}}"
+      with_items: "{{ running_vm_names }}"
+
+    - name: "Delete VMs"
+      command: "tart delete {{item}}"
+      when: item in vm_list.stdout | from_json | selectattr('Source', '==', 'local') |  map(attribute='Name')
+      with_items: "{{ groups['k3s_cluster'] }}"
+      # ignore_errors: true
+
+- name: Cleanup /etc/hosts and known_hosts
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: true
+  tasks:  
+    - name: Cleanup /etc/hosts and ~/.ssh/known_hosts
+      include_tasks: tasks/hosts/remove.yml
+
+
+
+

@@ -1,0 +1,20 @@
+- name: Stop VMs
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:  
+    - name: List VMs
+      command: "tart list --format json"
+      register: vm_list
+
+    - name: Find running VMs
+      set_fact:
+        running_vm_names: "{{vm_list.stdout | from_json | selectattr('Source', '==', 'local') | selectattr('State', '==', 'running')  | map(attribute='Name') }}"
+
+    - name: Stop running VMs  
+      command: "tart stop {{item}}"
+      with_items: "{{ running_vm_names }}"
+
+
+

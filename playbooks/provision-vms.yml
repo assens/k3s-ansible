@@ -1,0 +1,47 @@
+- name: Provision VMs
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:  
+    - name: Install tart.run
+      include_tasks: tasks/tart/install.yml
+
+    - name: List VMs
+      command: "tart list --format json"
+      register: vm_list
+
+    - name: Find provisioned k3s VMs
+      set_fact:
+        vm_names: "{{vm_list.stdout | from_json | selectattr('Source', '==', 'local') | map(attribute='Name') }}"
+
+    - name: Provision VMs
+      include_tasks: tasks/tart/provision.yml
+      when: item not in vm_names
+      loop: "{{ groups['k3s_cluster'] }}"  
+
+    - name: List VMs
+      command: "tart list --format json"
+      register: vm_list
+
+    - name: Set k3s VMs fact
+      set_fact:
+        k3s_vms: "{{ vm_list.stdout | from_json | selectattr('Source', '==', 'local') }}" # add name 
+
+    - name: Start VMs
+      include_tasks: tasks/tart/start.yml
+      loop: "{{ k3s_vms }}"
+
+    - name: Add VMs IPs to ansible repository and service domains to /etc/hosts 
+      include_tasks: tasks/hosts/add.yml
+      loop: "{{ k3s_vms }}"
+      loop_control:
+        loop_var: vm
+
+- name: Configure VMs
+  hosts: k3s_cluster
+  gather_facts: true
+  become: true
+  tasks:  
+    - name: Configure VMs OS
+      include_tasks: tasks/tart/bos.yml

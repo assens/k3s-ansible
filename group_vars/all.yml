@@ -1,0 +1,34 @@
+ansible_user: admin
+
+SSH_AUTHORIZED_KEY: 
+  - "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_rsa.pub') }}"
+
+DOMAIN: local
+
+VM_CPUS: 12
+VM_MEMORY_MB: 12000
+VM_DISK_GB: 100
+
+SERVICE_DOMAINS: 
+  - kubernetes-dashboard.{{DOMAIN}}
+  - prometheus.{{DOMAIN}}
+  # - grafana.{{DOMAIN}}
+  
+  # - portainer.{{DOMAIN}}
+  # - graylog.{{DOMAIN}}
+  # - alertmanager.{{DOMAIN}}
+  # - rabbitmq.{{DOMAIN}}
+  # - tbmq.{{DOMAIN}}
+  # - zipkin.{{DOMAIN}}
+  # - coherence.{{DOMAIN}}
+  # - spring-boot-admin.{{DOMAIN}}
+  # - spring-cloud-config.{{DOMAIN}}
+  # - spring-cloud-gateway.{{DOMAIN}}
+  # - kafka-bootstrap.{{DOMAIN}}
+  # - broker-0.{{DOMAIN}}
+  # - broker-1.{{DOMAIN}}
+  # - broker-2.{{DOMAIN}}
+  # - imdg.{{DOMAIN}}
+  # - imdg-rest.{{DOMAIN}}
+  # - imdg-management.{{DOMAIN}}
+  # - imdg-metrics.{{DOMAIN}}

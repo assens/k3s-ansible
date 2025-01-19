@@ -1,0 +1,24 @@
+- name: "Remove VM IP address from hosts file"
+  become: true
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ item }}$'
+    state: absent
+  with_items: "{{ groups['k3s_cluster'] }}"
+
+- name: Remove service domains from hosts file
+  become: true
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ item }}$'
+    state: absent
+  with_items: "{{ SERVICE_DOMAINS }}"
+
+- name: Remove vm hosts from known_hosts
+  become: false
+  lineinfile:
+    dest: "{{ lookup('env','HOME') }}/.ssh/known_hosts"
+    regexp: "^{{item}}.*$"
+    state: absent
+  with_items: "{{ groups['k3s_cluster'] }}"
+

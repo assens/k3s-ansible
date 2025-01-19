@@ -1,0 +1,92 @@
+- name: Configure hostname 
+  ansible.builtin.hostname:
+    name: "{{inventory_hostname_short}}"
+
+- name: Update apt packages
+  apt:
+    update_cache: yes
+  tags:
+    - system
+
+- name: Upgrade system
+  apt:
+    upgrade: full
+
+- name: Install packages
+  apt: "name={{item}}"
+  with_items:
+    - avahi-utils
+    - dnsutils 
+    - iperf 
+    - libnss-mdns 
+    - net-tools 
+    - ntp
+    - ntpdate
+    - systemd-timesyncd
+
+- name: Configure NPT server
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/timesyncd.conf
+    regexp: '^NTP='  
+    line: NTP=bg.pool.ntp.org
+
+- name: Configure mDNS
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: '^MulticastDNS='  
+    line: MulticastDNS=yes
+
+- name: Set authorized key
+  ansible.posix.authorized_key:
+    user: "{{ansible_user}}"
+    state: present
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+- name: Disable UFW
+  command: ufw disable
+
+- name: Add k3s hosts to /etc/hosts
+  lineinfile:
+      dest: /etc/hosts
+      line: "{{ hostvars[item]['ansible_default_ipv4']['address'] }} {{ item }}"
+      state: present
+  with_items: "{{groups['k3s_cluster']}}" 
+
+# - name: Set sysctl properties
+#   sysctl:
+#     name: "{{item.name}}"
+#     value: "{{item.value}}"
+#     state: present
+#   with_items:
+#     - { name: "vm.overcommit_memory", value: "1" }
+#     # - { name: "net.ipv4.conf.all.accept_redirects", value: "0" }
+#     # - { name: "net.ipv4.conf.all.forwarding", value: "1" }
+#     # - { name: "net.ipv4.conf.all.route_localnet", value: "1" }
+#     # - { name: "net.ipv4.conf.all.rp_filter", value: "0" }
+#     # - { name: "net.ipv4.conf.default.forwarding", value: "1" }
+#     # - { name: "net.ipv4.conf.default.rp_filter", value: "0" }
+#     # - { name: "net.ipv4.conf.enp0s1.forwarding", value: "1" }
+#     # - { name: "net.ipv4.conf.enp0s1.rp_filter", value: "0" }
+#     # - { name: "net.ipv4.conf.lo.forwarding", value: "1" }
+#     # - { name: "net.ipv4.ip_forward", value: "1" }
+#     # - { name: "net.ipv6.conf.all.forwarding", value: "1" }
+#     # - { name: "net.ipv6.conf.default.forwarding", value: "1" }
+#     # - { name: "net.ipv6.conf.enp0s1.forwarding", value: "1" }
+#     # - { name: "net.ipv6.conf.lo.forwarding", value: "1" }
+
+# - name: iptables -P FORWARD ACCEPT
+#   command: iptables -P FORWARD ACCEPT
+
+# - name: Create /etc/rc.local
+#   ansible.builtin.file:
+#     path: /etc/rc.local
+#     mode: '0755'
+#     state: touch
+
+# - name: Update /etc/rc.local
+#   copy:
+#     dest: /etc/rc.local
+#     content: |
+#       #!/bin/sh
+#       iptables -P FORWARD ACCEPT
+

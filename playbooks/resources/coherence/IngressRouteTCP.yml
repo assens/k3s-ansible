@@ -1,0 +1,13 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: imdg-extend-tcp
+  namespace: coherence
+spec:
+  entryPoints:
+  - extend
+  routes:
+  - match: HostSNI(`*`)
+    services:
+    - name: imdg-extend-tcp
+      port: 9090

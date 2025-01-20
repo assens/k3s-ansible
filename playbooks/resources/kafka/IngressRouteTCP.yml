@@ -1,0 +1,68 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: kafka-bootstrap
+  namespace: kafka
+spec:
+  entryPoints:
+    - kafka-bootstrap
+  routes:
+    - match: HostSNI(`*`)
+      services:
+        - name: kafka-cluster-kafka-external-bootstrap
+          port: 9094
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: broker-0
+  namespace: kafka
+spec:
+  entryPoints:
+    - broker-0
+  routes:
+    - match: HostSNI(`*`)
+      services:
+        - name: kafka-cluster-node-pool-0
+          port: 9094
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: broker-1
+  namespace: kafka
+spec:
+  entryPoints:
+    - broker-1
+  routes:
+    - match: HostSNI(`*`)
+      services:
+        - name: kafka-cluster-node-pool-1
+          port: 9094
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: broker-2
+  namespace: kafka
+spec:
+  entryPoints:
+    - broker-2
+  routes:
+    - match: HostSNI(`*`)
+      services:
+        - name: kafka-cluster-node-pool-2
+          port: 9094
+
+    # - match: HostSNI(`*`)
+    #   services:
+    #     - name: kafka-cluster-node-pool-1
+    #       port: 9942
+    # - match: HostSNI(`*`)
+    #   services:
+    #     - name: kafka-cluster-node-pool-2
+    #       port: 9943
+  #tls:
+  #  secretName: kafka-tls
+  #  passthrough: true

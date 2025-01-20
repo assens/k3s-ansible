@@ -1,0 +1,18 @@
+- name: Configure k3s traefik
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:  
+    - name: Configure traefik server transport
+      kubernetes.core.k8s:
+        state: present
+        src: resources/traefik/HelmChartConfig.yml
+    - name: Create traefik dashboard service
+      kubernetes.core.k8s:
+        state: present
+        src: resources/traefik/Service.yml
+    - name: Create traefik dashboard ingress
+      kubernetes.core.k8s:
+        state: present
+        src: resources/traefik/Ingress.yml

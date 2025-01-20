@@ -435,7 +435,7 @@ ingress:
   host: longhorn.local
 
   # -- Setting that allows you to enable TLS on ingress records.
-  tls: true
+  tls: false
 
   # -- Setting that allows you to enable secure connections to the Longhorn UI service via port 443.
   secureBackends: false

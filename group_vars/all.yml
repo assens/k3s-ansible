@@ -13,11 +13,12 @@ SERVICE_DOMAINS:
   - kubernetes-dashboard.{{DOMAIN}}
   - longhorn.{{DOMAIN}}
   - prometheus.{{DOMAIN}}
-  # - grafana.{{DOMAIN}}
+  - alertmanager.{{DOMAIN}}
+  - grafana.{{DOMAIN}}
   
   # - portainer.{{DOMAIN}}
   # - graylog.{{DOMAIN}}
-  # - alertmanager.{{DOMAIN}}
+  
   # - rabbitmq.{{DOMAIN}}
   # - tbmq.{{DOMAIN}}
   # - zipkin.{{DOMAIN}}
@@ -25,10 +26,10 @@ SERVICE_DOMAINS:
   # - spring-boot-admin.{{DOMAIN}}
   # - spring-cloud-config.{{DOMAIN}}
   # - spring-cloud-gateway.{{DOMAIN}}
-  # - kafka-bootstrap.{{DOMAIN}}
-  # - broker-0.{{DOMAIN}}
-  # - broker-1.{{DOMAIN}}
-  # - broker-2.{{DOMAIN}}
+  - kafka-bootstrap.{{DOMAIN}}
+  - broker-0.{{DOMAIN}}
+  - broker-1.{{DOMAIN}}
+  - broker-2.{{DOMAIN}}
   # - imdg.{{DOMAIN}}
   # - imdg-rest.{{DOMAIN}}
   # - imdg-management.{{DOMAIN}}

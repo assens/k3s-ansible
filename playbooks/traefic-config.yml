@@ -1,0 +1,10 @@
+- name: Configure k3s traefic
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:  
+    - name: Configure traefic server transport
+      kubernetes.core.k8s:
+        state: present
+        src: resources/k3s/traefic-HelmChartConfig.yml

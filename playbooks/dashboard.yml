@@ -1,0 +1,33 @@
+- name: Provision Kubernetes Dashboard
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:  
+    - name: Add Kubernetes Dashboard helm repository
+      kubernetes.core.helm_repository:
+        name: kubernetes-dashboard
+        repo_url: "https://kubernetes.github.io/dashboard/"
+    - name: Install Kubernetes Dashboard
+      kubernetes.core.helm:
+        name: kubernetes-dashboard
+        chart_ref: kubernetes-dashboard/kubernetes-dashboard
+        release_namespace: kubernetes-dashboard
+        create_namespace: true
+        values_files:
+          - resources/kubernetes-dashboard/values.yaml
+      register: result
+    - name: Create dashboard user service account
+      kubernetes.core.k8s:
+        state: present
+        src: resources/kubernetes-dashboard/ServiceAccount.yml
+
+    - name: Create dashboard user CRB
+      kubernetes.core.k8s:
+        state: present
+        src: resources/kubernetes-dashboard/ClusterRoleBinding.yml
+
+    - name: Create dashboard admin user secret
+      kubernetes.core.k8s:
+        state: present
+        src: resources/kubernetes-dashboard/Secret.yml

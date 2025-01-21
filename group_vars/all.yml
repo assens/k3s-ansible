@@ -27,6 +27,7 @@ SERVICE_DOMAINS:
   # - spring-boot-admin.{{DOMAIN}}
   # - spring-cloud-config.{{DOMAIN}}
   # - spring-cloud-gateway.{{DOMAIN}}
+  - kafka-ui.{{DOMAIN}}
   - kafka-bootstrap.{{DOMAIN}}
   - broker-0.{{DOMAIN}}
   - broker-1.{{DOMAIN}}

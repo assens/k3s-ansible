@@ -1,7 +1,7 @@
 - import_playbook: provision-vms.yml
 - import_playbook: site.yml
 - import_playbook: kube-config.yml
+- import_playbook: dashboard.yml
 - import_playbook: traefik.yml
 - import_playbook: longhorn.yml
 - import_playbook: kube-prom-stack.yml
-- import_playbook: dashboard.yml

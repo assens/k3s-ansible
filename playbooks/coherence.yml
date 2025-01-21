@@ -44,7 +44,7 @@
 
     - name: Deploy coherence extend Ingress Route TCP
       kubernetes.core.k8s:
-        src: playbooks/resources/coherence/IngressRouteTCP.yml
+        src: resources/coherence/IngressRouteTCP.yml
         state: present
 
     - name: Get Grafana admin user

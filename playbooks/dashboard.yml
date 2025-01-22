@@ -8,6 +8,7 @@
       kubernetes.core.helm_repository:
         name: kubernetes-dashboard
         repo_url: "https://kubernetes.github.io/dashboard/"
+
     - name: Install Kubernetes Dashboard
       kubernetes.core.helm:
         name: kubernetes-dashboard
@@ -16,7 +17,7 @@
         create_namespace: true
         values_files:
           - resources/kubernetes-dashboard/values.yaml
-      register: result
+
     - name: Create dashboard user service account
       kubernetes.core.k8s:
         state: present

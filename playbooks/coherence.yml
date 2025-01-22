@@ -39,7 +39,7 @@
 
     - name: Deploy coherence REST and Management ingress
       kubernetes.core.k8s:
-        src: resources/coherence/ingress.yml
+        src: resources/coherence/Ingress.yml
         state: present
 
     - name: Deploy coherence extend Ingress Route TCP

@@ -39,29 +39,33 @@ spec:
         port: 9092
         type: internal
         tls: false
-      - name: external
-        port: 9094
-        type: cluster-ip
-        tls: false
-        configuration:
-          bootstrap:
-            annotations:
-              advertisedHost: kakfa-bootstrap.local
-              advertisedPort: "9094"
-          brokers:
-            - broker: 0
-              advertisedHost: broker-0.local
-              advertisedPort: 9940
-            - broker: 1
-              advertisedHost: broker-1.local
-              advertisedPort: 9941
-            - broker: 2
-              advertisedHost: broker-2.local
-              advertisedPort: 9942
       # - name: tls
       #   port: 9093
       #   type: internal
       #   tls: true
+      - name: external
+        port: 9094
+        type: cluster-ip
+        tls: true
+        configuration:
+          bootstrap:
+            annotations:
+              advertisedHost: kakfa-bootstrap.local
+              advertisedPort: "443"
+          brokers:
+            - broker: 0
+              advertisedHost: broker-0.local
+              advertisedPort: 443
+            - broker: 1
+              advertisedHost: broker-1.local
+              advertisedPort: 443
+            - broker: 2
+              advertisedHost: broker-2.local
+              advertisedPort: 443
+          brokerCertChainAndKey:
+            secretName: kafka-tls
+            certificate: tls.crt
+            key: tls.key
       # - name: external
       #   port: 9095
       #   type: ingress

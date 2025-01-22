@@ -1,0 +1,53 @@
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned-cluster-issuer
+  namespace: kafka
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kafka-ca
+  namespace: kafka
+spec:
+  isCA: true
+  commonName: kafka-ca
+  secretName: kafka-ca
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    name: selfsigned-cluster-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: kafka-ca-issuer
+  namespace: kafka
+spec:
+  ca:
+    secretName: kafka-ca
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kafka-certificate
+  namespace: kafka
+spec:
+  commonName: kafka-bootstrap.local
+  dnsNames:
+    - kafka-bootstrap.local
+    - broker-0.local
+    - broker-1.local
+    - broker-2.local
+  issuerRef:
+    name: kafka-ca-issuer
+  privateKey:
+    size: 4096
+  secretName: kafka-tls
+  

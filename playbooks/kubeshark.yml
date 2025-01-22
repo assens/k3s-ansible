@@ -1,0 +1,29 @@
+- name: Install Kubeshark
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Create Kubeshark namespace
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          kind: Namespace
+          apiVersion: v1
+          metadata:
+            name: kubeshark
+            labels:
+              metrics: enabled
+    - name: Add Kubeshark helm repository
+      kubernetes.core.helm_repository:
+        name: kubeshark
+        repo_url: "https://helm.kubeshark.co"
+
+    - name: Install Kubeshark Dashboard
+      kubernetes.core.helm:
+        name: kubeshark
+        chart_ref: kubeshark/kubeshark 
+        release_namespace: kubeshark
+        create_namespace: true
+        values_files:
+          - resources/kubeshark/values.yaml

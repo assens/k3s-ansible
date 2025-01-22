@@ -1,0 +1,199 @@
+cloudLicenseEnabled: true
+dissectorsUpdatingEnabled: true
+dumpLogs: false
+headless: false
+internetConnectivity: true
+kube:
+  configPath: ""
+  context: ""
+license: ""
+logLevel: warning
+logs:
+  file: ""
+  grep: ""
+pcapdump:
+  enabled: true
+  maxSize: 500MB
+  maxTime: 1h
+  pcapSrcDir: pcapdump
+  time: time
+  timeInterval: 1m
+scripting:
+  active: []
+  console: true
+  env: {}
+  source: ""
+  sources: []
+  watchScripts: true
+supportChatEnabled: true
+tap:
+  annotations: {}
+  auth:
+    enabled: false
+    saml:
+      idpMetadataUrl: ""
+      roleAttribute: role
+      roles:
+        admin:
+          canDownloadPCAP: true
+          canStopTrafficCapturing: true
+          canUpdateTargetedPods: true
+          canUseScripting: true
+          filter: ""
+          scriptingPermissions:
+            canActivate: true
+            canDelete: true
+            canSave: true
+          showAdminConsoleLink: true
+      x509crt: ""
+      x509key: ""
+    type: saml
+  bpfOverride: ""
+  capabilities:
+    ebpfCapture:
+    - SYS_ADMIN
+    - SYS_PTRACE
+    - SYS_RESOURCE
+    - IPC_LOCK
+    networkCapture:
+    - NET_RAW
+    - NET_ADMIN
+    serviceMeshCapture:
+    - SYS_ADMIN
+    - SYS_PTRACE
+    - DAC_OVERRIDE
+  customMacros:
+    https: tls and (http or http2)
+  debug: false
+  defaultFilter: '!dns and !error'
+  disableTlsLog: true
+  docker:
+    imagePullPolicy: Always
+    imagePullSecrets: []
+    overrideImage:
+      front: ""
+      hub: ""
+      worker: ""
+    overrideTag:
+      front: ""
+      hub: ""
+      worker: ""
+    registry: docker.io/kubeshark
+    tag: ""
+    tagLocked: true
+  dryRun: false
+  efsFileSytemIdAndPath: ""
+  enabledDissectors:
+  - amqp
+  - dns
+  - http
+  - icmp
+  - kafka
+  - redis
+  - sctp
+  - syscall
+  - ws
+  - ldap
+  - radius
+  excludedNamespaces: []
+  globalFilter: ""
+  ignoreTainted: false
+  ingress:
+    annotations: {}
+    className: ""
+    enabled: true
+    host: kubeshark.local
+    tls: []
+  ipv6: true
+  labels: {}
+  metrics:
+    port: 49100
+  misc:
+    detectDuplicates: false
+    duplicateTimeframe: 200ms
+    jsonTTL: 5m
+    pcapErrorTTL: 60s
+    pcapTTL: 10s
+    resolutionStrategy: auto
+    staleTimeoutSeconds: 30
+    tcpStreamChannelTimeoutMs: 10000
+    tcpStreamChannelTimeoutShow: false
+    trafficSampleRate: 100
+  namespaces: []
+  nodeSelectorTerms:
+  - matchExpressions:
+    - key: kubernetes.io/os
+      operator: In
+      values:
+      - linux
+  packetCapture: best
+  persistentStorage: false
+  persistentStorageStatic: false
+  pprof:
+    enabled: false
+    port: 8000
+    view: flamegraph
+  presetFiltersChangingEnabled: true
+  probes:
+    hub:
+      failureThreshold: 3
+      initialDelaySeconds: 15
+      periodSeconds: 10
+      successThreshold: 1
+    sniffer:
+      failureThreshold: 3
+      initialDelaySeconds: 15
+      periodSeconds: 10
+      successThreshold: 1
+  proxy:
+    front:
+      port: 8899
+    host: 127.0.0.1
+    hub:
+      srvPort: 8898
+    worker:
+      srvPort: 48999
+  recordingDisabled: false
+  regex: .*
+  release:
+    name: kubeshark
+    namespace: default
+    repo: https://helm.kubeshark.co
+  resourceGuard:
+    enabled: false
+  resources:
+    hub:
+      limits:
+        cpu: "0"
+        memory: 5Gi
+      requests:
+        cpu: 50m
+        memory: 50Mi
+    sniffer:
+      limits:
+        cpu: "0"
+        memory: 5Gi
+      requests:
+        cpu: 50m
+        memory: 50Mi
+    tracer:
+      limits:
+        cpu: "0"
+        memory: 5Gi
+      requests:
+        cpu: 50m
+        memory: 50Mi
+  scriptingDisabled: false
+  sentry:
+    enabled: false
+    environment: production
+  serviceMesh: true
+  stopTrafficCapturingDisabled: false
+  stopped: false
+  storageClass: standard
+  storageLimit: 5000Mi
+  targetedPodsUpdateDisabled: false
+  telemetry:
+    enabled: true
+  tls: true
+timezone: ""

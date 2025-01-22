@@ -11,30 +11,6 @@ spec:
         expose:
           default: true
         protocol: TCP
-      kafka-bootstrap:
-        port: 9094
-        expose:
-          default: true
-        protocol: TCP
-      broker-0:
-        port: 9940
-        expose:
-          default: true
-        protocol: TCP
-      broker-1:
-        port: 9941
-        expose:
-          default: true
-        protocol: TCP
-      broker-2:
-        port: 9942
-        expose:
-          default: true
-        protocol: TCP
     additionalArguments:
       - "--serversTransport.insecureSkipVerify=true"
       - "--entrypoints.extend.address=:9090/tcp"
-      - "--entrypoints.kafka-bootstrap.address=:9094/tcp"
-      - "--entrypoints.broker-0.address=:9940/tcp"
-      - "--entrypoints.broker-1.address=:9941/tcp"
-      - "--entrypoints.broker-2.address=:9942/tcp"

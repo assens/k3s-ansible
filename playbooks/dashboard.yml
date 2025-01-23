@@ -8,6 +8,7 @@
       kubernetes.core.helm_repository:
         name: kubernetes-dashboard
         repo_url: "https://kubernetes.github.io/dashboard/"
+        force_update: true
 
     - name: Install Kubernetes Dashboard
       kubernetes.core.helm:
@@ -16,19 +17,10 @@
         release_namespace: kubernetes-dashboard
         create_namespace: true
         values_files:
-          - resources/kubernetes-dashboard/values.yaml
+          - resources/kubernetes-dashboard/values.yml
 
     - name: Create dashboard user service account
       kubernetes.core.k8s:
         state: present
         src: resources/kubernetes-dashboard/ServiceAccount.yml
 
-    - name: Create dashboard user CRB
-      kubernetes.core.k8s:
-        state: present
-        src: resources/kubernetes-dashboard/ClusterRoleBinding.yml
-
-    - name: Create dashboard admin user secret
-      kubernetes.core.k8s:
-        state: present
-        src: resources/kubernetes-dashboard/Secret.yml

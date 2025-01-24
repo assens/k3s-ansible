@@ -1,4 +1,4 @@
-ansible_user: admin
+ansible_user: assen
 
 SSH_AUTHORIZED_KEY: 
   - "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_rsa.pub') }}"

@@ -53,50 +53,50 @@
         namespace: kafka
         state: present
 
-    - name: Get Kafka TLS CA certificate
-      kubernetes.core.k8s_info:
-        kind: Secret
-        name: kafka-tls
-        namespace: kafka
-      register: cacertsecret
+    # - name: Get Kafka TLS CA certificate
+    #   kubernetes.core.k8s_info:
+    #     kind: Secret
+    #     name: kafka-tls
+    #     namespace: kafka
+    #   register: cacertsecret
 
-    - name: Import Kafka TLS CA certificate to client truststore.jks
-      community.general.java_cert:
-        cert_content: "{{ cacertsecret.resources[0].data['ca.crt'] | b64decode}}"
-        keystore_path: resources/kafka/certs/truststore.jks
-        keystore_pass: 12345678
-        keystore_create: true
-        state: present
-        cert_alias: kafka-cluster-ca
-        trust_cacert: true
+    # - name: Import Kafka TLS CA certificate to client truststore.jks
+    #   community.general.java_cert:
+    #     cert_content: "{{ cacertsecret.resources[0].data['ca.crt'] | b64decode}}"
+    #     keystore_path: resources/kafka/certs/truststore.jks
+    #     keystore_pass: 12345678
+    #     keystore_create: true
+    #     state: present
+    #     cert_alias: kafka-cluster-ca
+    #     trust_cacert: true
 
-    - name: Get Grafana admin user
-      kubernetes.core.k8s_info:
-        kind: Secret
-        name: kube-prometheus-stack-grafana
-        namespace: monitoring
-      register: grafana
+    # - name: Get Grafana admin user
+    #   kubernetes.core.k8s_info:
+    #     kind: Secret
+    #     name: kube-prometheus-stack-grafana
+    #     namespace: monitoring
+    #   register: grafana
 
-    - name: Create Kafka Grafana folder
-      community.grafana.grafana_folder:
-        url: http://grafana.local
-        grafana_user: "{{ grafana.resources[0].data['admin-user'] |  b64decode }}"
-        grafana_password: "{{ grafana.resources[0].data['admin-password'] | b64decode }}"
-        title: "Kafka"
-        state: present
-      ignore_errors: true
+    # - name: Create Kafka Grafana folder
+    #   community.grafana.grafana_folder:
+    #     url: http://grafana.local
+    #     grafana_user: "{{ grafana.resources[0].data['admin-user'] |  b64decode }}"
+    #     grafana_password: "{{ grafana.resources[0].data['admin-password'] | b64decode }}"
+    #     title: "Kafka"
+    #     state: present
+    #   ignore_errors: true
 
-    - name: Import Kafka Grafana dashboards
-      community.grafana.grafana_dashboard:
-        grafana_url: http://grafana.local
-        grafana_user: "{{ grafana.resources[0].data['admin-user'] |  b64decode }}"
-        grafana_password: "{{ grafana.resources[0].data['admin-password'] | b64decode }}"
-        folder: "Kafka"
-        state: present
-        overwrite: true
-        path: "{{item}}"
-      with_items:
-        - resources/kafka/grafana/strimzi-operators.json
-        - resources/kafka/grafana/strimzi-kafka-exporter.json
-        - resources/kafka/grafana/strimzi-kafka.json
-        - resources/kafka/grafana/strimzi-kraft.json
+    # - name: Import Kafka Grafana dashboards
+    #   community.grafana.grafana_dashboard:
+    #     grafana_url: http://grafana.local
+    #     grafana_user: "{{ grafana.resources[0].data['admin-user'] |  b64decode }}"
+    #     grafana_password: "{{ grafana.resources[0].data['admin-password'] | b64decode }}"
+    #     folder: "Kafka"
+    #     state: present
+    #     overwrite: true
+    #     path: "{{item}}"
+    #   with_items:
+    #     - resources/kafka/grafana/strimzi-operators.json
+    #     - resources/kafka/grafana/strimzi-kafka-exporter.json
+    #     - resources/kafka/grafana/strimzi-kafka.json
+    #     - resources/kafka/grafana/strimzi-kraft.json

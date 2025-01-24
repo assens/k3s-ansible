@@ -4,9 +4,10 @@ metadata:
   name: imdg
   namespace: coherence
 spec:
+  replicas: 3
   cluster: imdg
   #image: ghcr.io/oracle/coherence-ce:24.09
-  image: repository.azdio-tv.com/com.azdio.k8s/coherence-cluster-node:1.0.0-SNAPSHOT-arm64
+  image: repository.azdio-tv.com/com.azdio.k8s/coherence-cluster-node:1.0.0-SNAPSHOT-amd64
   imagePullPolicy: Always
   imagePullSecrets:  
     - name: docker-registry-credentials
@@ -70,9 +71,9 @@ spec:
       cpu: "500m"
   resources:
       requests:
-        memory: "1907Mi"
+        memory: "8G"
         #cpu: "250m"
       limits:
-        memory: "3814Mi"
+        memory: "16G"
         #cpu: "500m"
 

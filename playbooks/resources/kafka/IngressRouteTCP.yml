@@ -22,7 +22,7 @@ spec:
           port: 9094
     - match: HostSNI(`broker-2.local`)
       services:
-        - name: kafka-cluster-node-pool-0
+        - name: kafka-cluster-node-pool-2
           port: 9094
   tls:
     secretName: kafka-tls

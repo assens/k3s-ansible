@@ -8,8 +8,7 @@ spec:
     ports:
       extend:
         port: 9090
-        expose:
-          default: true
+        expose: true
         protocol: TCP
     additionalArguments:
       - "--serversTransport.insecureSkipVerify=true"

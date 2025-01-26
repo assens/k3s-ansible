@@ -25,7 +25,7 @@ SERVICE_DOMAINS:
   # - tbmq.{{DOMAIN}}
   # - zipkin.{{DOMAIN}}
   # - coherence.{{DOMAIN}}
-  # - spring-boot-admin.{{DOMAIN}}
+  - spring-boot-admin.{{DOMAIN}}
   # - spring-cloud-config.{{DOMAIN}}
   # - spring-cloud-gateway.{{DOMAIN}}
   - kafka-ui.{{DOMAIN}}

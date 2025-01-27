@@ -37,6 +37,11 @@
         src: resources/coherence/imdg.yml
         state: present
 
+    - name: Deploy coherence service account
+      kubernetes.core.k8s:
+        src: resources/coherence/ServiceAccount.yml
+        state: present
+
     - name: Deploy coherence REST and Management ingress
       kubernetes.core.k8s:
         src: resources/coherence/Ingress.yml
@@ -45,11 +50,6 @@
     - name: Deploy coherence extend Ingress Route TCP
       kubernetes.core.k8s:
         src: resources/coherence/IngressRouteTCP.yml
-        state: present
-
-    - name: Deploy coherence service account
-      kubernetes.core.k8s:
-        src: resources/coherence/ServiceAccount.yml
         state: present
 
     - name: Get Grafana admin user

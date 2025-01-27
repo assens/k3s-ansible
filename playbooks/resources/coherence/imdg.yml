@@ -7,8 +7,8 @@ spec:
   replicas: 3
   cluster: imdg
   #image: ghcr.io/oracle/coherence-ce:24.09
-  image: repository.azdio-tv.com/com.egt.digital.plafrom.services/coherence-cluster-node:24.09.2.0-SNAPSHOT
-  imagePullPolicy: Always
+  image: ttl.sh/dc96a2da-42ce-455d-8827-f9256c16f81f:10m
+  imagePullPolicy: IfNotPresent # Always
   application:
     main: com.egt.digital.platform.services.coherence.CoherenceClusterNodeApplication
   imagePullSecrets:  
@@ -65,6 +65,11 @@ spec:
     - name: metrics
       serviceMonitor:
         enabled: true
+    - name: spring-web
+      port: 8888
+    - name: spring-actuator
+      port: 8090
+
   initResources:           
     requests:
       memory: "64Mi"

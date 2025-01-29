@@ -1,5 +1,4 @@
 cloudLicenseEnabled: true
-dissectorsUpdatingEnabled: true
 dumpLogs: false
 headless: false
 internetConnectivity: true
@@ -15,7 +14,6 @@ pcapdump:
   enabled: true
   maxSize: 500MB
   maxTime: 1h
-  pcapSrcDir: pcapdump
   time: time
   timeInterval: 1m
 scripting:
@@ -67,6 +65,10 @@ tap:
   debug: false
   defaultFilter: '!dns and !error'
   disableTlsLog: true
+  dns:
+    nameservers: []
+    options: []
+    searches: []
   docker:
     imagePullPolicy: Always
     imagePullSecrets: []
@@ -95,6 +97,7 @@ tap:
   - ws
   - ldap
   - radius
+  - diameter
   excludedNamespaces: []
   globalFilter: ""
   ignoreTainted: false
@@ -104,8 +107,9 @@ tap:
     enabled: true
     host: kubeshark.local
     tls: []
-  ipv6: true
+  ipv6: false
   labels: {}
+  liveConfigMapChangesDisabled: false
   metrics:
     port: 49100
   misc:
@@ -121,11 +125,24 @@ tap:
     trafficSampleRate: 100
   namespaces: []
   nodeSelectorTerms:
-  - matchExpressions:
-    - key: kubernetes.io/os
-      operator: In
-      values:
-      - linux
+    front:
+    - matchExpressions:
+      - key: kubernetes.io/os
+        operator: In
+        values:
+        - linux
+    hub:
+    - matchExpressions:
+      - key: kubernetes.io/os
+        operator: In
+        values:
+        - linux
+    workers:
+    - matchExpressions:
+      - key: kubernetes.io/os
+        operator: In
+        values:
+        - linux
   packetCapture: best
   persistentStorage: false
   persistentStorageStatic: false
@@ -133,7 +150,6 @@ tap:
     enabled: false
     port: 8000
     view: flamegraph
-  presetFiltersChangingEnabled: true
   probes:
     hub:
       failureThreshold: 3
@@ -153,7 +169,6 @@ tap:
       srvPort: 8898
     worker:
       srvPort: 48999
-  recordingDisabled: false
   regex: .*
   release:
     name: kubeshark
@@ -183,16 +198,13 @@ tap:
       requests:
         cpu: 50m
         memory: 50Mi
-  scriptingDisabled: false
   sentry:
     enabled: false
     environment: production
   serviceMesh: true
-  stopTrafficCapturingDisabled: false
   stopped: false
   storageClass: standard
   storageLimit: 5000Mi
-  targetedPodsUpdateDisabled: false
   telemetry:
     enabled: true
   tls: true

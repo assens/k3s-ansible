@@ -14,6 +14,7 @@
             name: kubeshark
             labels:
               metrics: enabled
+
     - name: Add Kubeshark helm repository
       kubernetes.core.helm_repository:
         name: kubeshark
@@ -24,6 +25,5 @@
         name: kubeshark
         chart_ref: kubeshark/kubeshark 
         release_namespace: kubeshark
-        create_namespace: true
         values_files:
-          - resources/kubeshark/values.yaml
+         - resources/kubeshark/values.yml

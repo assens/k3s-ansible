@@ -8,11 +8,11 @@ spec:
   cluster: imdg
   #image: ghcr.io/oracle/coherence-ce:24.09
   image: ttl.sh/dc96a2da-42ce-455d-8827-f9256c16f81f:10m
-  imagePullPolicy: IfNotPresent # Always
+  imagePullPolicy: Always
   application:
     main: com.egt.digital.platform.services.coherence.CoherenceClusterNodeApplication
-  imagePullSecrets:  
-   - name: docker-registry-credentials
+  #imagePullSecrets:
+  # - name: docker-registry-credentials
   jvm:
     args:
       - "-XX:-UseG1GC"

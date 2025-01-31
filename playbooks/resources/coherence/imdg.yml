@@ -11,8 +11,11 @@ spec:
   imagePullPolicy: Always
   application:
     main: com.egt.digital.platform.services.coherence.CoherenceClusterNodeApplication
-  #imagePullSecrets:
-  # - name: docker-registry-credentials
+  # imagePullSecrets:
+  #   - name: docker-registry-credentials
+  configMapVolumes:
+    - name: coherence-config
+      mountPath: /config
   jvm:
     args:
       - "-XX:-UseG1GC"
@@ -28,8 +31,8 @@ spec:
       minRAMPercentage: 5
       maxRAMPercentage: 80
   coherence:
-    cacheConfig: /app/resources/coherence-cache-config-kafka.xml
-    #overrideConfig: tangosol-coherence-override.xml
+    cacheConfig: /config/coherence-cache-config.xml
+    overrideConfig: /config/tangosol-coherence-override.xml
     storageEnabled: true
     management:
       enabled: true
@@ -62,6 +65,8 @@ spec:
       port: 8080
     - name: extend-tcp
       port: 9090
+    - name: extend-proxy
+      port: 9091  
     - name: metrics
       serviceMonitor:
         enabled: true

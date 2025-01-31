@@ -1,8 +1,9 @@
+# spring boot service enpoints
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: imdg-spring-boot
+  name: coherence-imdg
   namespace: coherence
   labels:
     app.kubernetes.io/name: imdg-spring-boot

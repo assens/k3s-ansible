@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+
+<cache-config
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://xmlns.oracle.com/coherence/coherence-cache-config"
+  xmlns:kafka="class://com.oracle.coherence.kafka.KafkaNamespaceHandler"
+  xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-cache-config xsd/coherence-cache-config.xsd">
+
+  <defaults>
+    <serializer system-property="coherence.serializer">pof</serializer>
+  </defaults>
+
+  <caching-scheme-mapping>
+    <cache-mapping>
+      <cache-name>kafka-*</cache-name>
+      <scheme-name>partitioned-rwbm-kafka</scheme-name>
+    </cache-mapping>
+    <cache-mapping>
+      <cache-name>*</cache-name>
+      <scheme-name>partitioned-cache</scheme-name>
+    </cache-mapping>
+  </caching-scheme-mapping>
+
+  <caching-schemes>
+    <distributed-scheme>
+      <scheme-name>partitioned-rwbm-kafka</scheme-name>
+      <service-name>PartitionedKafkaCache</service-name>
+      <local-storage>true</local-storage>
+      <partition-count>3</partition-count>
+      <backing-map-scheme>
+        <partitioned>true</partitioned>
+        <read-write-backing-map-scheme>
+          <internal-cache-scheme>
+            <local-scheme>
+              <high-units>{back-limit-bytes 0B}</high-units>
+              <unit-calculator>BINARY</unit-calculator>
+            </local-scheme>
+          </internal-cache-scheme>
+          <cachestore-scheme>
+            <class-scheme>
+              <kafka:producer>
+                <!-- use default class -->
+                <kafka:topic-name>{cache-name}</kafka:topic-name>
+                <!-- default for passthrough is false -->
+                <kafka:bootstrap-servers>kafka-cluster-kafka-bootstrap.kafka.svc:9092</kafka:bootstrap-servers>
+                <kafka:key-serializer>org.apache.kafka.common.serialization.StringSerializer</kafka:key-serializer>
+                <kafka:value-serializer>org.apache.kafka.common.serialization.StringSerializer</kafka:value-serializer>
+                <kafka:max-block-ms>5000</kafka:max-block-ms>
+                <!--
+                <kafka:ssl-truststore-location>/ssl/truststore.jks</kafka:ssl-truststore-location>
+                <kafka:ssl-truststore-password>12345678</kafka:ssl-truststore-password>
+                <kafka:ssl-keystore-location>/ssl/keystore.jks</kafka:ssl-keystore-location>
+                <kafka:ssl-keystore-password>12345678</kafka:ssl-keystore-password>
+                -->
+              </kafka:producer>
+            </class-scheme>
+          </cachestore-scheme>
+        </read-write-backing-map-scheme>
+      </backing-map-scheme>
+      <autostart>true</autostart>
+    </distributed-scheme>
+
+    <distributed-scheme>
+      <scheme-name>partitioned-cache</scheme-name>
+      <service-name>PartitionedCache</service-name>
+      <local-storage>true</local-storage>
+      <partition-count>3</partition-count>
+      <backing-map-scheme>
+        <local-scheme>
+          <high-units>{back-limit-bytes 0B}</high-units>
+          <unit-calculator>BINARY</unit-calculator>
+        </local-scheme>
+      </backing-map-scheme>
+      <persistence>
+        <environment>default-active</environment>
+        <archiver>shared-directory-archiver</archiver>
+        <active-failure-mode>stop-service</active-failure-mode>
+      </persistence>
+      <autostart>true</autostart>
+    </distributed-scheme>
+
+    <proxy-scheme>
+      <scheme-name>extend-tcp</scheme-name>
+      <service-name>ExtendTcpService</service-name>
+      <acceptor-config>
+        <tcp-acceptor>
+          <local-address>
+            <address>0.0.0.0</address>
+            <port>9090</port>
+          </local-address>
+        </tcp-acceptor>
+      </acceptor-config>
+      <load-balancer>client</load-balancer>
+      <autostart>true</autostart>
+    </proxy-scheme>
+
+    <proxy-scheme>
+      <scheme-name>extend-tcp-proxy</scheme-name>
+      <service-name>ExtendTcpProxyService</service-name>
+      <acceptor-config>
+        <tcp-acceptor>
+          <local-address>
+            <address>0.0.0.0</address>
+            <port>9091</port>
+          </local-address>
+        </tcp-acceptor>
+      </acceptor-config>
+      <load-balancer>proxy</load-balancer>
+      <autostart>true</autostart>
+    </proxy-scheme>
+
+    <proxy-scheme>
+      <scheme-name>extend-http-cache</scheme-name>
+      <service-name>ExtendHttpProxyService</service-name>
+      <acceptor-config>
+        <http-acceptor>
+          <local-address>
+            <address>0.0.0.0</address>
+            <port>8080</port>
+          </local-address>
+        </http-acceptor>
+      </acceptor-config>
+      <load-balancer>client</load-balancer>
+      <autostart>true</autostart>
+    </proxy-scheme>
+
+    <!-- Transactional caching scheme. -->
+    <transactional-scheme>
+      <scheme-name>transactional</scheme-name>
+      <service-name>TransactionalCache</service-name>
+    </transactional-scheme>
+  </caching-schemes>
+
+</cache-config>

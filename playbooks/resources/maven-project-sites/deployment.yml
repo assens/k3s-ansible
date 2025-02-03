@@ -1,0 +1,118 @@
+# ---
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: egtd-platform-services
+#   labels:
+#     kubernetes.io/metadata.name: egtd-platform-services
+#     metrics: enabled
+# ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: webdav-pvc
+  namespace: egtd-platform-services
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: webdav-config
+  namespace: egtd-platform-services
+data:
+  config.yml: |
+    address: 0.0.0.0
+    port: 6065
+    tls: false
+    prefix: /
+    permissions: CRUD
+    log:
+      format: console
+      colors: false
+    noPassword: true
+    users:
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maven-project-sites
+  namespace: egtd-platform-services
+  labels:
+    app.kubernetes.io/name: maven-project-sites
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: maven-project-sites
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: maven-project-sites
+    spec:
+      volumes:
+        - name: webdav-config-volume
+          configMap:
+            name: webdav-config
+        - name: webdav-volume
+          persistentVolumeClaim:
+            claimName: webdav-pvc  
+      containers:
+        - name: maven-project-sites
+          image: ghcr.io/hacdias/webdav:latest
+          imagePullPolicy: IfNotPresent
+          args:
+            - -c
+            - /config/config.yml
+          ports:
+            - containerPort: 6065
+          resources: {}
+          volumeMounts:
+            - name: webdav-config-volume
+              readOnly: true
+              mountPath: /config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: maven-project-sites
+  namespace: egtd-platform-services
+  labels:
+    app.kubernetes.io/name: maven-project-sites
+spec:
+  selector:
+    app.kubernetes.io/name: maven-project-sites
+  type: ClusterIP
+  ports:
+    - name: http
+      protocol: TCP
+      port: 6065
+      targetPort: 6065
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: maven-project-sites
+  namespace: egtd-platform-services
+  labels:
+    app.kubernetes.io/name: spring-boot-admin
+    type: spring-boot
+spec:
+  rules:
+  - host: maven-project-sites.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: maven-project-sites
+            port:
+              number: 6065

@@ -1,0 +1,27 @@
+- name: Install SonarQube
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Create Sonarqube namespace
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          kind: Namespace
+          apiVersion: v1
+          metadata:
+            name: sonarqube
+            labels:
+              metrics: enabled
+    - name: Add sonarqube helm repository
+      kubernetes.core.helm_repository:
+        name: sonarqube
+        repo_url: "https://SonarSource.github.io/helm-chart-sonarqube"
+    - name: Install sonarqube
+      kubernetes.core.helm:
+        name: sonarqube
+        chart_ref: sonarqube/sonarqube
+        release_namespace: sonarqube
+        values_files:
+         - resources/sonarqube/values.yml

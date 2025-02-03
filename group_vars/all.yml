@@ -17,6 +17,8 @@ SERVICE_DOMAINS:
   - alertmanager.{{DOMAIN}}
   - grafana.{{DOMAIN}}
   - kubeshark.{{DOMAIN}}
+  - sonarqube.{{DOMAIN}}
+  - maven-project-sites.{{DOMAIN}}
   
   # - portainer.{{DOMAIN}}
   # - graylog.{{DOMAIN}}

@@ -82,13 +82,24 @@
     <proxy-scheme>
       <scheme-name>extend-tcp</scheme-name>
       <service-name>ExtendTcpService</service-name>
-      <acceptor-config>
+      <acceptor-config>        
         <tcp-acceptor>
           <local-address>
             <address>0.0.0.0</address>
             <port>9090</port>
           </local-address>
         </tcp-acceptor>
+        <serializer>
+          <instance>
+            <class-name>com.tangosol.io.pof.ConfigurablePofContext</class-name>
+            <init-params>
+              <init-param>
+                <param-type>string</param-type>
+                <param-value>/config/pof-config.xml</param-value>
+              </init-param>
+            </init-params>
+          </instance>
+        </serializer>
       </acceptor-config>
       <load-balancer>client</load-balancer>
       <autostart>true</autostart>
@@ -104,6 +115,17 @@
             <port>9091</port>
           </local-address>
         </tcp-acceptor>
+        <serializer>
+          <instance>
+            <class-name>com.tangosol.io.pof.ConfigurablePofContext</class-name>
+            <init-params>
+              <init-param>
+                <param-type>string</param-type>
+                <param-value>/config/pof-config.xml</param-value>
+              </init-param>
+            </init-params>
+          </instance>
+        </serializer>
       </acceptor-config>
       <load-balancer>proxy</load-balancer>
       <autostart>true</autostart>

@@ -1,0 +1,35 @@
+- name: Install Elasticsearch
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Create Elasticsearch namespace
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          kind: Namespace
+          apiVersion: v1
+          metadata:
+            name: elasticsearch
+            labels:
+              metrics: enabled
+
+    - name: Add Elasticsearch helm repository
+      kubernetes.core.helm_repository:
+        name: elasticsearch
+        repo_url: "https://helm.elastic.co"
+
+    - name: Install Elasticsearch
+      kubernetes.core.helm:
+        name: elasticsearch
+        chart_ref: elasticsearch/elasticsearch 
+        release_namespace: elasticsearch
+        values_files:
+          - resources/elasticsearch/values.yml
+    
+    - name: Create Elasticsearch ingress 
+      kubernetes.core.k8s:
+        src: resources/elasticsearch/IngressRouteTcp.yml
+        namespace: kafka
+        state: present

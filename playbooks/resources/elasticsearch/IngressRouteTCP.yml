@@ -1,0 +1,16 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: elasticsearch-master
+  namespace: elasticsearch
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - match: HostSNI(`elasticsearch.local`)
+    services:
+    - name: elasticsearch-master
+      port: 9200
+  tls:
+    secretName: elasticsearch-master-certs
+    passthrough: true

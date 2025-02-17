@@ -18,6 +18,7 @@ SERVICE_DOMAINS:
   - grafana.{{DOMAIN}}
   - kubeshark.{{DOMAIN}}
   - sonarqube.{{DOMAIN}}
+  - elasticsearch.{{DOMAIN}}
   - maven-project-sites.{{DOMAIN}}
   
   # - portainer.{{DOMAIN}}

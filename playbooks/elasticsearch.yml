@@ -31,5 +31,22 @@
     - name: Create Elasticsearch ingress 
       kubernetes.core.k8s:
         src: resources/elasticsearch/IngressRouteTcp.yml
-        namespace: kafka
+        namespace: elasticsearch
         state: present
+
+    - name: Get Elasticsearch TLS CA certificate
+      kubernetes.core.k8s_info:
+        kind: Secret
+        name: elasticsearch-master-certs
+        namespace: elasticsearch
+      register: cacertsecret
+
+    - name: Import Elasticsearch TLS CA certificate to client truststore.jks
+      community.general.java_cert:
+        cert_content: "{{ cacertsecret.resources[0].data['ca.crt'] | b64decode}}"
+        keystore_path: resources/elasticsearch/certs/truststore.jks
+        keystore_pass: 12345678
+        keystore_create: true
+        state: present
+        cert_alias: elasticsearch-cluster-ca
+        trust_cacert: true

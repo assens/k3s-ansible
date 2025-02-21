@@ -6,16 +6,14 @@ metadata:
 spec:
   replicas: 3
   cluster: imdg
-  #image: ghcr.io/oracle/coherence-ce:24.09
+  role: Storage
   image: ttl.sh/dc96a2da-42ce-455d-8827-f9256c16f81f:10m
   imagePullPolicy: Always
   application:
     main: com.egt.digital.platform.services.coherence.CoherenceClusterNodeApplication
-  # imagePullSecrets:
-  #   - name: docker-registry-credentials
-  configMapVolumes:
-    - name: coherence-config
-      mountPath: /config
+  #configMapVolumes:
+  #  - name: coherence-config
+  #    mountPath: /config
   jvm:
     args:
       - "-XX:-UseG1GC"
@@ -26,21 +24,21 @@ spec:
       - "--add-opens java.base/java.io=ALL-UNNAMED"
       - "--add-opens java.base/java.lang=ALL-UNNAMED"
       - "-Dserver.port=8888"
+      - "-Dspring.profiles.active=kubernetes"
     memory:
       initialRAMPercentage: 10
       minRAMPercentage: 5
       maxRAMPercentage: 80
   coherence:
-    cacheConfig: /config/coherence-cache-config.xml
-    overrideConfig: /config/tangosol-coherence-override.xml
+    #cacheConfig: /config/coherence-cache-config.xml
+    #overrideConfig: /config/tangosol-coherence-override.xml
     storageEnabled: true
     management:
       enabled: true
     logLevel: 9
     persistence:
       mode: active
-      persistentVolumeClaim:     
-        #storageClassName: ceph-rbd
+      persistentVolumeClaim:
         accessModes:
           - ReadWriteOnce
         resources:
@@ -85,8 +83,8 @@ spec:
   resources:
       requests:
         memory: "8G"
-        #cpu: "250m"
+        #cpu: "4"
       limits:
         memory: "16G"
-        #cpu: "500m"
+        #cpu: "8"
 

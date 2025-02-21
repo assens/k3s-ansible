@@ -7,7 +7,7 @@
   xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-cache-config xsd/coherence-cache-config.xsd">
 
   <defaults>
-    <serializer system-property="coherence.serializer">pof</serializer>
+    <serializer>pof</serializer>
   </defaults>
 
   <caching-scheme-mapping>

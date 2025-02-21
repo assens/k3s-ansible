@@ -14,26 +14,40 @@
             name: coherence
             labels:
               metrics: enabled
-    
-    - name: Install Coherence Operator
-      kubernetes.core.k8s:
-        src: https://github.com/oracle/coherence-operator/releases/download/v3.4.0/coherence-operator.yaml
-        state: present
 
-    - name: Wait for operator deployment avaiablity
-      kubernetes.core.k8s:
-        namespace: coherence
-        name: coherence-operator-controller-manager
-        kind: Deployment
-        wait: yes
-        wait_sleep: 2
-        wait_timeout: 100
-        wait_condition:
-          type: Available
-          status: true
+    - name: Add Coherence helm repository
+      kubernetes.core.helm_repository:
+        name: coherence
+        repo_url: "https://oracle.github.io/coherence-operator/charts"
+        force_update: true
 
-    - name: Create coherence config map
-     ansible.builtin.command: kubectl -n coherence create configmap coherence-config --from-file resources/coherence/config
+    - name: Install Coherence Cluster operator
+      kubernetes.core.helm:
+        name: coherence
+        chart_ref: coherence/coherence-operator
+        release_namespace: coherence
+        values_files:
+         - resources/coherence/values.yml
+
+    # - name: Install Coherence Operator
+    #   kubernetes.core.k8s:
+    #     src: https://github.com/oracle/coherence-operator/releases/download/v3.4.0/coherence-operator.yaml
+    #     state: absent
+
+    # - name: Wait for operator deployment avaiablity
+    #   kubernetes.core.k8s:
+    #     namespace: coherence
+    #     name: coherence-operator-controller-manager
+    #     kind: Deployment
+    #     wait: yes
+    #     wait_sleep: 2
+    #     wait_timeout: 100
+    #     wait_condition:
+    #       type: Available
+    #       status: true
+
+#    - name: Create coherence config map
+#     ansible.builtin.command: kubectl -n coherence create configmap coherence-config --from-file resources/coherence/config
 
     - name: Deploy coherence cluster
       kubernetes.core.k8s:
@@ -55,34 +69,34 @@
         src: resources/coherence/IngressRouteTCP.yml
         state: present
 
-    - name: Get Grafana admin user
-      kubernetes.core.k8s_info:
-        kind: Secret
-        name: kube-prometheus-stack-grafana
-        namespace: monitoring
-      register: grafana
+    # - name: Get Grafana admin user
+    #   kubernetes.core.k8s_info:
+    #     kind: Secret
+    #     name: kube-prometheus-stack-grafana
+    #     namespace: monitoring
+    #   register: grafana
 
-    - name: Find all Coherence dashboards
-      ansible.builtin.find:
-        paths: resources/coherence/grafana
-      register: files
+    # - name: Find all Coherence dashboards
+    #   ansible.builtin.find:
+    #     paths: resources/coherence/grafana
+    #   register: files
 
-    - name: Create Coherence Grafana folder
-      community.grafana.grafana_folder:
-        url: http://grafana.local
-        grafana_user: "{{ grafana.resources[0].data['admin-user'] |  b64decode }}"
-        grafana_password: "{{ grafana.resources[0].data['admin-password'] | b64decode }}"
-        title: "Coherence"
-        state: present
+    # - name: Create Coherence Grafana folder
+    #   community.grafana.grafana_folder:
+    #     url: http://grafana.local
+    #     grafana_user: "{{ grafana.resources[0].data['admin-user'] |  b64decode }}"
+    #     grafana_password: "{{ grafana.resources[0].data['admin-password'] | b64decode }}"
+    #     title: "Coherence"
+    #     state: present
 
-    - name: Import Coherence Grafana dashboards
-      community.grafana.grafana_dashboard:
-        grafana_url: http://grafana.local
-        grafana_user: "{{ grafana.resources[0].data['admin-user'] |  b64decode }}"
-        grafana_password: "{{ grafana.resources[0].data['admin-password'] | b64decode }}"
-        folder: "Coherence"
-        state: present
-        overwrite: false
-        path: "{{item}}"
-      with_items: "{{ files.files |  map(attribute='path') }}"
-      ignore_errors: true
+    # - name: Import Coherence Grafana dashboards
+    #   community.grafana.grafana_dashboard:
+    #     grafana_url: http://grafana.local
+    #     grafana_user: "{{ grafana.resources[0].data['admin-user'] |  b64decode }}"
+    #     grafana_password: "{{ grafana.resources[0].data['admin-password'] | b64decode }}"
+    #     folder: "Coherence"
+    #     state: present
+    #     overwrite: false
+    #     path: "{{item}}"
+    #   with_items: "{{ files.files |  map(attribute='path') }}"
+    #   ignore_errors: true

@@ -75,8 +75,10 @@ hostAliases: []
 #  - "foo.local"
 #  - "bar.local"
 
-image: "docker.elastic.co/elasticsearch/elasticsearch"
-imageTag: "8.5.1"
+#image: "docker.elastic.co/elasticsearch/elasticsearch"
+#imageTag: "8.5.1"
+image: "ttl.sh/c26cdaff-59a6-4686-af50-d3ca6c048a9a"
+imageTag: "10m"
 imagePullPolicy: "IfNotPresent"
 
 podAnnotations: {}
@@ -158,9 +160,9 @@ extraContainers: []
 #   command: ['do', 'something']
 
 extraInitContainers: []
-# - name: do-something
-#   image: busybox
-#   command: ['do', 'something']
+#  - name: do-something
+#    image: busybox
+#    command: ['sh', '-c', 'bin/elasticsearch-plugin install --batch analysis-icu', ]
 
 # This is the PriorityClass settings as defined in
 # https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass

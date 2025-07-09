@@ -148,10 +148,13 @@ auth:
   role: auth
   image:
     repository: docker.io/kubernetesui/dashboard-auth
-    tag: 1.2.3
+    tag: 1.3.0
   scaling:
     replicas: 1
     revisionHistoryLimit: 10
+  service:
+    type: ClusterIP
+    extraSpec: ~
   containers:
     ports:
       - name: auth
@@ -187,10 +190,13 @@ api:
   role: api
   image:
     repository: docker.io/kubernetesui/dashboard-api
-    tag: 1.10.2
+    tag: 1.13.0
   scaling:
     replicas: 1
     revisionHistoryLimit: 10
+  service:
+    type: ClusterIP
+    extraSpec: ~
   containers:
     ports:
       - name: api
@@ -244,10 +250,13 @@ web:
   role: web
   image:
     repository: docker.io/kubernetesui/dashboard-web
-    tag: 1.6.1
+    tag: 1.7.0
   scaling:
     replicas: 1
     revisionHistoryLimit: 10
+  service:
+    type: ClusterIP
+    extraSpec: ~
   containers:
     ports:
       - name: web
@@ -308,6 +317,9 @@ metricsScraper:
   scaling:
     replicas: 1
     revisionHistoryLimit: 10
+  service:
+    type: ClusterIP
+    extraSpec: ~
   containers:
     ports:
       - containerPort: 8000
@@ -378,9 +390,6 @@ kong:
     dns_order: LAST,A,CNAME,AAAA,SRV
     plugins: 'off'
     nginx_worker_processes: 1
-    admin_listen: 127.0.0.1:8444 http2 ssl 
-    proxy_listen: 0.0.0.0:8443 http2 ssl 
-    status_listen: 0.0.0.0:8100
   ingressController:
     enabled: false
   manager:
@@ -443,3 +452,4 @@ extras:
     # ServiceMonitor connection tlsConfig. Defaults to {insecureSkipVerify:true}.
     tlsConfig:
       insecureSkipVerify: true
+

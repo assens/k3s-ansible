@@ -17,7 +17,7 @@
         release_namespace: kubernetes-dashboard
         create_namespace: true
         values_files:
-          - resources/kubernetes-dashboard/values.yml
+          - resources/kubernetes-dashboard/values-new.yml
 
     - name: Create dashboard user service account
       kubernetes.core.k8s:

@@ -5,11 +5,18 @@ metadata:
   namespace: kube-system
 spec:
   valuesContent: |-
+    additionalArguments:
+      - "--api"
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
+      - "--serversTransport.insecureSkipVerify=true"
+      - "--entrypoints.extend.address=:9090/tcp"
     ports:
       extend:
         port: 9090
-        expose: true
         protocol: TCP
-    additionalArguments:
-      - "--serversTransport.insecureSkipVerify=true"
-      - "--entrypoints.extend.address=:9090/tcp"
+        expose:
+          default: true         
+    providers:
+      kubernetesCRD:
+        allowCrossNamespace: true

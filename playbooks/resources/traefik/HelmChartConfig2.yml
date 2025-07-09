@@ -1,0 +1,15 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    ports:
+      extend:
+        port: 9090
+        expose: true
+        protocol: TCP
+    additionalArguments:
+      - "--serversTransport.insecureSkipVerify=true"
+      - "--entrypoints.extend.address=:9090/tcp"

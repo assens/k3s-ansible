@@ -17,7 +17,7 @@ defaultCoherenceImage:
 
 # watchNamespaces is the comma delimited list of namespaces that the operator should
 # manage Coherence resources in. The default is to manage all namespaces.
-watchNamespaces: "coherence,egtd-platform-services"
+watchNamespaces: "coherence,egtd-services"
 
 # imagePullPolicy controls the K8s container spec's pull policy
 # If not set the pull policy is "IfNotPresent".

@@ -4,20 +4,20 @@
 
 # image is the Coherence Operator image
 image:
-  registry: "ghcr.io/oracle"
+  registry: "container-registry.oracle.com/middleware"
   name: "coherence-operator"
-  tag: "3.4.2"
+  tag: "3.5.2"
 
 # defaultCoherenceImage is the default application image that will be used if a Coherence
 # resource does not specify an image name.
 defaultCoherenceImage:
-  registry: "ghcr.io/oracle"
+  registry: "container-registry.oracle.com/middleware"
   name: "coherence-ce"
-  tag: "14.1.2-0-1"
+  tag: "14.1.2-0-2"
 
-# watchNamespaces is the comma delimited list of namespaces that the operator should
+# watchNamespaces is the comma-delimited list of namespaces that the operator should
 # manage Coherence resources in. The default is to manage all namespaces.
-watchNamespaces: "coherence,egtd-services"
+watchNamespaces: ""
 
 # imagePullPolicy controls the K8s container spec's pull policy
 # If not set the pull policy is "IfNotPresent".
@@ -26,6 +26,11 @@ imagePullPolicy: Always
 # replicas is the number of Operator replicas to run.
 # The operator runs HA by default, with one of the replicas assuming leadership.
 replicas: 3
+
+# progressDeadlineSeconds maps to the same field in the Operator deployment resource.
+# If not set, the default is 600 seconds
+# see: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds
+progressDeadlineSeconds: 600
 
 # imagePullSecrets provides support pulling images from private registries, the value references
 #   one or more secrets to be used when pulling images. Secrets must be manually created in the
@@ -70,7 +75,7 @@ globalAnnotations:
 
 # ---------------------------------------------------------------------------
 # Operator Pod securityContext
-# This sets the securityContext configuration for the Pod, for example
+# This sets the securityContext configuration for the Operator Pod, for example,
 # to run as a non-root user:
 #
 #  podSecurityContext:
@@ -81,7 +86,7 @@ podSecurityContext:
 
 # ---------------------------------------------------------------------------
 # Operator container securityContext
-# This sets the securityContext configuration for the container, for example
+# This sets the securityContext configuration for the container, for example,
 # to run as a non-root user:
 #
 #  securityContext:
@@ -202,17 +207,27 @@ clusterRoles: true
 # nodeRoles controls whether the Helm chart will create RBAC ClusterRole and bindings for the Operator to
 # lookup cluster-wide Node information.
 # Setting this value clusterRoles and to false will mean that the Operator cannot look up Node labels that will be used
-# to set theCoherence site and rack values so Coherence cluster will be unable to automatically achieve site-safety.
+# to set the Coherence site and rack values so Coherence cluster will be unable to automatically achieve site-safety.
 # The default is true.
 nodeRoles: false
 # webhooks controls whether the Coherence Operator registers admission web-hooks for the Coherence resource.
 # If this is set to false, then it will be possible to install invalid Coherence resource into the Kubernetes
-# cluster, that may cause errors when the Operator tries to reconcile them, or worse the Operator may create
+# cluster. This may cause errors when the Operator tries to reconcile them, or worse, the Operator may create
 # other invalid Kubernetes resources that fail to run.
 webhooks: true
 
 # If set to false, the Operator will not support the CoherenceJob resource type.
-# The CoherenceJob CRD will not be installed by the Operator and the Operator will
-# not listen for any CoherenceJob resource events.
+# The CoherenceJob CRD will not be installed and the Operator will not listen
+# for any CoherenceJob resource events.
 allowCoherenceJobs: true
+
+# If set to false, the Helm chart will not install the CRDs.
+# The CRDs must be manually installed before the Operator can be installed.
+installCrd: true
+
+cipherAllowList: []
+
+cipherDenyList: []
+
+fips:
 

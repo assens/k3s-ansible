@@ -11,7 +11,19 @@ spec:
       - "--api.insecure=true"
       - "--serversTransport.insecureSkipVerify=true"
       - "--entrypoints.extend.address=:9090/tcp"
+      - "--entrypoints.mqtt.address=:1883/tcp"
+      - "--entrypoints.mqtt-tls.address=:8883/tcp"
     ports:
+      mqtt:
+        port: 1883
+        protocol: TCP
+        expose:
+          default: true
+      mqtt-tls:
+        port: 8883
+        protocol: TCP
+        expose:
+          default: true
       extend:
         port: 9090
         protocol: TCP
